@@ -1,11 +1,8 @@
-# Audio +
-# Video
-# Editing
-# Library
+# avel: Audio & Video Editing Library
 
 ## Overview
 
-avel is a library of functions I created to help make automated video editing and generation a little easier. It supports trimming, combining video clips with different dimensions, adding text overlays, merging audio, and more.
+avel is a library of functions for video editing and generation. It supports trimming, combining video clips with different dimensions, adding text overlays, merging audio, and more.
 
 ## Dependencies
 
