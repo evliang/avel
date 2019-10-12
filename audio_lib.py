@@ -7,8 +7,8 @@ from shared_lib import get_duration
 def _pad_integer(i):
     return str(i).zfill(2)
 
-def create_audio(audio_list, output_path, debugging=False):
-    """Creates an audio file given a glob pattern and an approx duration"""
+def create_audio(audio_list, output_path, transition_time=13, debugging=False):
+    """Creates a single audio file from a list"""
     temp0 = os.path.join(os.path.dirname(output_path), 'temp0.wav')
     temp1 = os.path.join(os.path.dirname(output_path), 'temp1.wav')
     def temp_file(i):
@@ -19,16 +19,16 @@ def create_audio(audio_list, output_path, debugging=False):
     if len(audio_list) > 2:
         print(audio_list)
         subprocess.call(['ffmpeg', '-hide_banner', '-loglevel', 'panic', '-y', '-i', audio_list[0], '-i', audio_list[1], '-vn',
-                '-filter_complex', 'acrossfade=d=13:c1=tri:c2=squ', temp1])
+                f'-filter_complex', 'acrossfade=d={transition_time}:c1=tri:c2=squ', temp1])
         for i in range(2, len(audio_list) - 1):
             subprocess.call(['ffmpeg', '-hide_banner', '-loglevel', 'panic', '-y', '-i', temp_file(i-1), '-i', audio_list[i], '-vn',
-                '-filter_complex', 'acrossfade=d=13:c1=tri:c2=squ', temp_file(i)])
+                f'-filter_complex', 'acrossfade=d={transition_time}:c1=tri:c2=squ', temp_file(i)])
         # final call to convert to mp3
         subprocess.call(['ffmpeg', '-hide_banner', '-loglevel', 'panic', '-y', '-i', temp_file(len(audio_list) - 2), '-i', audio_list[-1], '-vn',
-            '-filter_complex', 'acrossfade=d=13:c1=tri:c2=squ', output_path])
+            f'-filter_complex', 'acrossfade=d={transition_time}:c1=tri:c2=squ', output_path])
     elif len(audio_list) == 2:
         subprocess.call(['ffmpeg', '-hide_banner', '-loglevel', 'panic', '-y', '-i', audio_list[0], '-i', audio_list[1], '-vn',
-            '-filter_complex', 'acrossfade=d=13:c1=tri:c2=squ', output_path])
+            f'-filter_complex', 'acrossfade=d={transition_time}:c1=tri:c2=squ', output_path])
     elif len(audio_list) == 1:
         shutil.copyfile(audio_list[0], output_path)
     else:
