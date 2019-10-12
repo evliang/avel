@@ -7,7 +7,7 @@ from shared_lib import get_duration
 def _pad_integer(i):
     return str(i).zfill(2)
 
-def create_audio(audio_list, output_path, transition_time=13, debugging=False):
+def combine_audio(audio_list, output_path, transition_time=13, debugging=False):
     """Creates a single audio file from a list"""
     temp0 = os.path.join(os.path.dirname(output_path), 'temp0.wav')
     temp1 = os.path.join(os.path.dirname(output_path), 'temp1.wav')

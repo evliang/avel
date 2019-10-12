@@ -29,7 +29,7 @@ def create_image_video(image, seconds, output_filename):
 
 # https://github.com/tanersener/ffmpeg-video-slideshow-scripts/tree/master/transition_scripts
 def create_image_slideshow_fade(images, seconds, output_filename):
-    # creates a simple image slideshow with fade transition
+    """Creates a simple image slideshow with fade transition"""
     all_dimensions = list(map(lambda x: get_dimensions(x), images))
     width, height = max(map(lambda x: x, all_dimensions))
     part1 = []
@@ -82,7 +82,7 @@ def slowmo(input_vid, output_path, multiplier=2.0, duration=None):
     else:
         subprocess.call(['ffmpeg', '-hide_banner', '-loglevel', 'panic', '-i', input_vid, '-filter:v', 'setpts=' + str(multiplier) + '*PTS', output_path, '-y'])
 
-def concat_videos(files, output_filename, debugging=False):
+def combine_videos(files, output_filename, debugging=False):
     """Concatting video files of all dimensions and durations together"""
     def intermediate_file(idx):
         return 'intermediate' + str(idx) + '.ts'
@@ -109,15 +109,6 @@ def concat_videos(files, output_filename, debugging=False):
 def blur_video(filePath, output_filename, resolution=None, debugging=False):
     """Creates a video with blurred sides (for clips that are not the same width as the final video's width.
     This option works well for now, but takes the resolution from the first video"""
-    # os.popen('ffmpeg -i ' + filePath
-    #     + " -lavfi '[0:v]scale=ih*16/9:-1,boxblur=luma_radius=min(h\,w)/20:luma_power=1:chroma_radius=min(cw\,ch)/20:chroma_power=1[bg];[bg][0:v]overlay=(W-w)/2:(H-h)/2,crop=h=iw*9/16' -vb 800K "
-    #     + output_filename)
-    # if resolution:
-    #     (width,height) = resolution.split('x')
-    #     subprocess.call(['ffmpeg', '-y', '-i', filePath,
-    #         '-filter_complex', r"[0:v]scale=1280:-1,boxblur=luma_radius=min(h\,w)/20:luma_power=1:chroma_radius=min(cw\,ch)/20:chroma_power=1[bg];[bg][0:v]overlay=(W-w)/2:(H-h)/2,crop='if(gte(dar,16/9),ih*16/9,iw)':'if(gte(dar,16/9),ih,iw*9/16)'",
-    #         output_filename])
-    # else:
     subprocess.call(['ffmpeg', '-y', '-i', filePath,
         '-filter_complex', r"[0:v]scale=ih*16/9:-1,boxblur=luma_radius=min(h\,w)/20:luma_power=1:chroma_radius=min(cw\,ch)/20:chroma_power=1[bg];[bg][0:v]overlay=(W-w)/2:(H-h)/2,crop='if(gte(dar,16/9),ih*16/9,iw)':'if(gte(dar,16/9),ih,iw*9/16)'",
         output_filename])
@@ -126,7 +117,7 @@ def blur_video(filePath, output_filename, resolution=None, debugging=False):
     return output_filename
 
 def combine_audio_video(audioPath, videoPath, output_filename, debugging=False):
-    """Combining audio and video into one video file. I believe shorter duration of video/audio determines the final video's duration"""
+    """Combining audio and video into one video file. Shorter duration of video/audio determines the final video's duration"""
     subprocess.call(['ffmpeg', '-y', '-hide_banner', '-loglevel', 'panic', '-i', audioPath, '-i', videoPath, '-codec', 'copy', '-shortest', output_filename])
 
     if not debugging:
