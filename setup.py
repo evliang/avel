@@ -1,9 +1,9 @@
 from setuptools import setup
 
-version = '0.1'
+version = '0.11'
 setup(
     name='avel',
-    version='0.1',
+    version=version,
     description='Python ffmpeg wrapper for audio and video editing (trim, subtitles/overlay, concat, merge, & more!)',
     license='MIT',
     author='evliang',
