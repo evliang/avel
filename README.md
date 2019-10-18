@@ -2,7 +2,7 @@
 
 ## Overview
 
-avel is a library of functions for video editing and generation. It supports trimming, combining video clips with different dimensions, adding text overlays, merging audio, and more.
+avel is a library of functions for video editing and generation. It supports trimming, combining video clips with different dimensions, adding text overlays, merging audio, and more. 
 
 ## Installation
 
@@ -13,18 +13,39 @@ To install `avel` run:
 pip install git+https://github.com/evliang/avel.git
 ```
 
-## Example Usage
+## Example Usages
 
 ```Python
-import avel
+from avel import video_lib, audio_lib
 
-# create 3 video clips from an input file and timestamps
+# create clips of a video (original video is preserved)
+video_lib.trim_video(f'input.mp4', 'output0.mp4', 4, 8)
+video_lib.trim_video(f'input.mp4', 'output1.mp4', '00:00:42.000', '00:01:33.700')
+video_lib.trim_video(f'input.mp4', 'output2.mp4', 93.472, 121.337)
+
+# alternatively...if you have a list of timestamps coming from another process...
 timestamps = [
-    '4.472-8.337',
+    '4-8',
     '00:00:42.000-00:01:33.700',
-    '93.7-121' ]
+    '93.472-121.337' ]
 for (i, t) in enumerate(timestamps):
-    avel.video_lib.trim_video(f'input.mp4', f'output{i}.mkv', *t.split('-'))
+    video_lib.trim_video(f'input.mp4', f'output{i}.mkv', *t.split('-'))
+
+# combine multiple clips into one file
+video_lib.combine_videos(["file1.mp4", "file2.mkv", "file3.avi"], "combined.mkv")
+
+# creates a video with 16:9 ratio, adding a blur effect to the sides if applicable
+video_lib.blur_video("combined.mkv", "blurred.mkv")
+
+# extract audio from a video
+audio_lib.extract_audio("video.mp4", "audio1.m4a", 15, 30)
+
+# combine multiple audio files into one longer audio file, with 8s transition
+audio_lib.combine_audio(["audio1.m4a", "audio2.mp3"], "output.mp3", transition_time=8)
+
+# merge two audio files into one
+audio_lib.merge_audio("main.mp3", "background.mp3", "output.mp3", vol1=1.0, vol2=0.4)
+
+# combine audio and video file
 ```
 
-See the examples folder for more use cases
