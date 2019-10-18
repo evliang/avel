@@ -22,7 +22,7 @@ import avel
 timestamps = [
     '4.472-8.337',
     '00:00:42.000-00:01:33.700',
-    '93.7'-'121' ]
+    '93.7-121' ]
 for (i, t) in enumerate(timestamps):
     avel.video_lib.trim_video(f'input.mp4', f'output{i}.mkv', *t.split('-'))
 ```

@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '0.11'
+version = '0.1'
 setup(
     name='avel',
     version=version,
