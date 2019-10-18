@@ -39,9 +39,13 @@ def combine_audio(audio_list, output_path, transition_time=13, debugging=False):
     
     return output_path
 
-def extract_audio(video_file, output_file, time1, time2):
+def extract_audio(video_file, output_file, time1=None, time2=None):
     """Creates audio file from video and timestamps"""
-    call_ffmpeg(f'ffmpeg -i {video_file} -ss {time1} -to {time2} -c:a libmp3lame {output_file}', verbose=True)
+    if time1:
+        ss_str = f'-ss {time1} '
+    if time2:
+        to_str = f'-to {time2} '
+    call_ffmpeg(f'ffmpeg -i {video_file} {ss_str}{to_str}-c:a libmp3lame {output_file}', verbose=True)
      #f"volume=enable='between(t,t1,t2)':volume=0, volume=enable='between(t,t3,t4)':volume=0",
 
 def merge_audio(audio_file1, audio_file2, output_file, vol1=1.0, vol2=1.0):
