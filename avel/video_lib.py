@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 import subprocess
 from avel.shared_lib import call_ffmpeg, call_external, get_duration
@@ -74,6 +75,44 @@ def create_scrolling_image(image, output_filename, seconds, direction):
         # going up:
         call_ffmpeg(f'''ffmpeg -loop 1 -t {seconds} -i {image} -filter_complex color=white:s={dimensions}[bg];[bg][0]overlay=y=main_h-overlay_h+'t*{speed}':shortest=1[video] -r 25/1 -preset ultrafast -map [video] {output_filename}''', verbose=True)
         #subprocess.call(['ffmpeg', '-hide_banner', '-loglevel', 'panic', '-loop', '1', '-t', str(seconds), '-i', image, '-filter_complex', 'color=white:s=' + dimensions + "[bg];[bg][0]overlay=y=main_h-overlay_h+'t*" + str(speed) + "':shortest=1[video]", '-r', '25/1', '-preset', 'ultrafast', '-map', '[video]', output_filename, '-y'])
+
+position_map = {
+        'top': '10',
+        'mid_y': '(h-text_h)/2',
+        'bot': 'h-1.33*text_h',
+        'left': '10',
+        'mid_x': '(w-text_w)/2',
+        'right': 'w-1.33*text_w'
+    }
+
+def create_drawtext_dict(text, x_loc, y_loc, font_size, **kwargs):
+#   todo: kwargs.keys() intersection w/ set and re-build dict
+    if sys.platform == 'win32':
+        text2 = text.replace("'", u"\u2019").replace(':', r'\\\:').replace('%', r'\\\%')
+    else:
+        text2 = text.replace("'", u"\u2019").replace(':', r'\:').replace('%', r'\%')
+    kwargs.update({
+            'text': text2,
+            'x': position_map.get(x_loc, x_loc),
+            'y': position_map.get(y_loc, y_loc),
+            'fontsize': font_size
+        })
+    return kwargs
+
+# todo: text, loc (enum), loc (enum), font_size (XS,S,M,L,XL,FS), start/end, color, isBoxed (bool), font
+def drawtext(inp, outp, txt_dicts):
+    drawtexts = []
+    for dt_dict in txt_dicts:
+        dt = f"drawtext="
+        for key in dt_dict:
+            dt = f"{dt}{key}='{dt_dict.get(key)}':"
+        drawtexts.append(dt)
+    print("""[in]{}[out]""".format(','.join(drawtexts)))
+
+    if len(txt_dicts) > 0:
+        subprocess.call(['ffmpeg', '-y', '-i', inp, '-vf',
+                        """[in]{}[out]""".format(','.join(drawtexts)),
+                        '-codec:a', 'copy', outp])
 
 def slowmo(input_vid, output_path, multiplier=2.0, duration=None):
     if duration:
