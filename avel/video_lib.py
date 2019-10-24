@@ -1,5 +1,5 @@
 import os
-import sys
+import platform
 import shutil
 import subprocess
 from avel.shared_lib import call_ffmpeg, call_external, get_duration
@@ -77,26 +77,35 @@ def create_scrolling_image(image, output_filename, seconds, direction):
         #subprocess.call(['ffmpeg', '-hide_banner', '-loglevel', 'panic', '-loop', '1', '-t', str(seconds), '-i', image, '-filter_complex', 'color=white:s=' + dimensions + "[bg];[bg][0]overlay=y=main_h-overlay_h+'t*" + str(speed) + "':shortest=1[video]", '-r', '25/1', '-preset', 'ultrafast', '-map', '[video]', output_filename, '-y'])
 
 position_map = {
-        'top': '10',
-        'mid_y': '(h-text_h)/2',
-        'bot': 'h-1.33*text_h',
-        'left': '10',
-        'mid_x': '(w-text_w)/2',
-        'right': 'w-1.33*text_w'
+        'top':    '10',
+        'mid_y':  '(h-text_h)/2',
+        'bottom': 'h-1.33*text_h',
+        'left':   '10',
+        'mid_x':  '(w-text_w)/2',
+        'right':  'w-1.33*text_w'
     }
 
 def create_drawtext_dict(text, x_loc, y_loc, font_size, **kwargs):
 #   todo: kwargs.keys() intersection w/ set and re-build dict
-    if sys.platform == 'win32':
+    if 'eif' in text: # hack
+        text2 = text
+    elif platform.system() == 'Windows':
         text2 = text.replace("'", u"\u2019").replace(':', r'\\\:').replace('%', r'\\\%')
+        #kwargs.setdefault('fontfile', r'C\:\\Windows\\Fonts\\tahoma.ttf')
+        kwargs.setdefault('fontfile', '/Windows/Fonts/tahoma.ttf')
+    elif platform.system() == 'Darwin':
+        text2 = text.replace("'", u"\u2019").replace(':', r'\:').replace('%', r'\%')
+        kwargs.setdefault('font', r'/Library/Fonts/Tahoma.ttf')
     else:
         text2 = text.replace("'", u"\u2019").replace(':', r'\:').replace('%', r'\%')
+        
     kwargs.update({
             'text': text2,
             'x': position_map.get(x_loc, x_loc),
             'y': position_map.get(y_loc, y_loc),
             'fontsize': font_size
         })
+    kwargs.setdefault('fontcolor', 'white')
     return kwargs
 
 # todo: text, loc (enum), loc (enum), font_size (XS,S,M,L,XL,FS), start/end, color, isBoxed (bool), font
