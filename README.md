@@ -15,23 +15,23 @@ pip install git+https://github.com/evliang/avel.git
 
 ## Video library functions
 
-- **trim_video**: Create clips of a video (original video is preserved)
+Create clips of a video (original video is preserved)
 ```Python
 trim_video(f'input.mp4', 'output0.mp4', 4, 8.2)
 trim_video(f'input.mp4', 'output1.mp4', '00:00:42.000', '00:01:33.700')
 ```
 
-- **combine_videos**: Combine multiple clips into one file
+Combine multiple clips into one file
 ```Python
 combine_videos(["file1.mp4", "file2.mkv", "file3.avi"], "combined.mkv")
 ```
 
-**blur_video**: Create a video with 16:9 ratio, adding a blur effect to the sides (if applicable)
+Create a video with 16:9 ratio, adding a blur effect to the sides (if applicable)
 ```Python
 blur_video("combined.mkv", "blurred.mkv")
 ```
 
-**drawtext**: Add text on top of video (e.g. subtitles, watermark) using a dictionary of options
+Add text on top of video (e.g. subtitles, watermark) using a dictionary of options
 ```Python
 overlays = [
     create_drawtext_dict("avel", "right", "bottom", 40),
@@ -42,22 +42,22 @@ drawtext("input.mkv", "output.mkv", overlays)
 
 ## Audio library functions
 
-**extract_audio**: Extract audio from a video
+Extract audio from a video
 ```Python
 extract_audio("video.mp4", "audio1.m4a", 15, 30)
 ```
 
-**combine_audio**: Combine list of audio files into one longer audio file, with an 8-second transition
+Combine list of audio files into one longer audio file, with an 8-second transition
 ```Python
 combine_audio(["audio1.m4a", "audio2.mp3"], "output.mp3", transition_time=8)
 ```
 
-**merge_audio**: Merge two audio files into one (e.g. foreground and background)
+Merge two audio files into one (e.g. foreground and background)
 ```Python
 merge_audio("main.mp3", "background.mp3", "output.mp3", vol1=1.0, vol2=0.4)
 ```
 
-**combine_audio_video**: Combine audio and video file into one video file
+Combine audio and video file into one video file
 ```Python
 combine_audio_video(audioPath, videoPath, output_filename)
 ```
