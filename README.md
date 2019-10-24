@@ -13,73 +13,76 @@ To install `avel` run:
 pip install git+https://github.com/evliang/avel.git
 ```
 
-## Example Usages
+## Video library functions
 
+Create clips of a video (original video is preserved):
 ```Python
-from avel import video_lib, audio_lib
-```
+from avel.video_lib import trim_video
 
-```Python
-# create clips of a video (original video is preserved)
+trim_video(f'input.mp4', 'output0.mp4', 4, 8)
+trim_video(f'input.mp4', 'output1.mp4', '00:00:42.000', '00:01:33.700')
+trim_video(f'input.mp4', 'output2.mp4', 93.472, 121.337)
 
-video_lib.trim_video(f'input.mp4', 'output0.mp4', 4, 8)
-video_lib.trim_video(f'input.mp4', 'output1.mp4', '00:00:42.000', '00:01:33.700')
-video_lib.trim_video(f'input.mp4', 'output2.mp4', 93.472, 121.337)
-```
-
-```Python
-# alternatively...if you have a list of timestamps coming from another process...
-
+# alternatively...with a list of timestamps:
 timestamps = [
     '4-8',
     '00:00:42.000-00:01:33.700',
     '93.472-121.337' ]
 for (i, t) in enumerate(timestamps):
-    video_lib.trim_video(f'input.mp4', f'output{i}.mkv', *t.split('-'))
+    trim_video(f'input.mp4', f'output{i}.mkv', *t.split('-'))
 ```
 
+Combine multiple clips into one file:
 ```Python
-# combine multiple clips into one file
+from avel.video_lib import combine_videos
 
-video_lib.combine_videos(["file1.mp4", "file2.mkv", "file3.avi"], "combined.mkv")
+combine_videos(["file1.mp4", "file2.mkv", "file3.avi"], "combined.mkv")
 ```
 
+Create a video with 16:9 ratio, adding a blur effect to the sides (if applicable)
 ```Python
-# creates a video with 16:9 ratio, adding a blur effect to the sides if applicable
+from avel.video_lib import blur_video
 
-video_lib.blur_video("combined.mkv", "blurred.mkv")
+blur_video("combined.mkv", "blurred.mkv")
 ```
 
+Add text on top of video (e.g. subtitles, watermark)
 ```Python
-# add text overlay (e.g. subtitles, watermark)
+from avel.video_lib import create_drawtext_dict, drawtext
 
 overlays = [
-    video_lib.create_drawtext_dict("avel", "right", "bottom", 40),
-    video_lib.create_drawtext_dict("Hello World!", "mid_x", "bottom", 50, enable="between(t,0,8)") ]
+    create_drawtext_dict("avel", "right", "bottom", 40),
+    create_drawtext_dict("Hello World!", "mid_x", "bottom", 50, enable="between(t,0,8)") ]
 
-video_lib.drawtext("input.mkv", "output.mkv", overlays)
+drawtext("input.mkv", "output.mkv", overlays)
 ```
 
-```Python
-# extract audio from a video
+## Audio library functions
 
-audio_lib.extract_audio("video.mp4", "audio1.m4a", 15, 30)
+Extract audio from a video
+```Python
+from avel.audio_lib import extract_audio
+
+extract_audio("video.mp4", "audio1.m4a", 15, 30)
 ```
 
+Combine multiple audio files into one longer audio file, with an 8-second transition
 ```Python
-# combine multiple audio files into one longer audio file, with 8s transition
+from avel.audio_lib import combine_video
 
-audio_lib.combine_audio(["audio1.m4a", "audio2.mp3"], "output.mp3", transition_time=8)
+combine_audio(["audio1.m4a", "audio2.mp3"], "output.mp3", transition_time=8)
 ```
 
+Merge two audio files into one (e.g. foreground and background)
 ```Python
-# merge two audio files into one
+from avel.audio_lib import merge_audio
 
-audio_lib.merge_audio("main.mp3", "background.mp3", "output.mp3", vol1=1.0, vol2=0.4)
+merge_audio("main.mp3", "background.mp3", "output.mp3", vol1=1.0, vol2=0.4)
 ```
 
+Combine audio and video file into one video file
 ```Python
-# combine audio and video file into one video file
+from avel.video_lib import combine_audio_video
 
 combine_audio_video(audioPath, videoPath, output_filename)
 ```
