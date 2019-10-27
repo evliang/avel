@@ -82,7 +82,7 @@ position_map = {
         'bottom': 'h-1.33*text_h',
         'left':   '10',
         'mid_x':  '(w-text_w)/2',
-        'right':  'w-1.33*text_w'
+        'right':  'w-1.33*text_h'
     }
 
 def create_drawtext_dict(text, x_loc, y_loc, font_size, **kwargs):
