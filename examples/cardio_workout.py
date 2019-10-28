@@ -21,11 +21,12 @@ def create_hiit_overlays(initial_time, hi_time, low_time, num_sets):
     fontsize is hardcoded for 720p video resolution
     """
     hiit_overlay = []
+    exercise = get_rand_exercise()
     for i in range(num_sets):
         t1 = initial_time + i*(hi_time+low_time)
         hiit_overlay.append(
-            create_drawtext_dict(get_rand_exercise().capitalize(), "mid_x", "top", 90, box='1:boxcolor=black@0.5:boxborderw=5:',
-                enable=f"between(t,{t1},{t1 + 5})" ))
+            create_drawtext_dict(exercise.capitalize(), "mid_x", "top", 90, box='1:boxcolor=black@0.5:boxborderw=5:',
+                enable=f"between(t,{t1},{t1 + hi_time})" ))
         hiit_overlay.append(
             create_drawtext_dict(get_countdown_str(t1 + hi_time), "right", "top", 75, box='1:boxcolor=black@0.5:boxborderw=5:',
                 enable=f"between(t,{t1},{t1 + hi_time})" ))
@@ -35,7 +36,11 @@ def create_hiit_overlays(initial_time, hi_time, low_time, num_sets):
                 enable=f"between(t,{t1 + hi_time},{t1 + hi_time + 5})"))
         hiit_overlay.append(
             create_drawtext_dict("rest " + get_countdown_str(t1 + hi_time + low_time), "right", "top", 75, box='1:boxcolor=black@0.5:boxborderw=5:',
-                enable=f"between(t,{t1 + hi_time + 5},{t1 + hi_time + low_time})" ))
+                enable=f"between(t,{t1 + hi_time + 5},{t1 + hi_time + low_time - 5})" ))
+        exercise = get_rand_exercise()
+        hiit_overlay.append(
+            create_drawtext_dict(f"next is {exercise} {get_countdown_str(t1 + hi_time + low_time)}", "right", "top", 75, box='1:boxcolor=black@0.5:boxborderw=5:',
+                enable=f"between(t,{t1 + hi_time + low_time - 5},{t1 + hi_time + low_time})" ))
     return hiit_overlay
 
 def create_hiit_video(input_video, output_dir=None):
