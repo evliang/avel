@@ -79,10 +79,10 @@ def create_scrolling_image(image, output_filename, seconds, direction):
 position_map = {
         'top':    '10',
         'mid_y':  '(h-text_h)/2',
-        'bottom': 'h-1.33*text_h',
+        'bottom': 'h-text_h-10',
         'left':   '10',
         'mid_x':  '(w-text_w)/2',
-        'right':  'w-1.33*text_h'
+        'right':  'w-text_w-10'
     }
 
 def create_drawtext_dict(text, x_loc, y_loc, font_size, **kwargs):
